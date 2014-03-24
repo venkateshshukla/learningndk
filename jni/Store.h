@@ -1,11 +1,10 @@
 #ifndef _STORE_H
 #define _STORE_H
-#endif
 
 #include "jni.h"
 #include <stdint.h>
 
-#define STORE_MAX_CAPACITY 20
+#define STORE_MAX_CAPACITY 10
 
 typedef enum {
 	StoreType_Int, StoreType_String, StoreType_Color
@@ -32,3 +31,9 @@ int32_t isEntryValid(JNIEnv* env,StoreEntry* rEntry, StoreType rType);
 StoreEntry* allocateEntry(JNIEnv* env, Store* rStore, jstring rKey);
 StoreEntry* findEntry(JNIEnv* env, Store* rStore, jstring rKey, int32_t* rError);
 void freeEntry(JNIEnv* env,StoreEntry* rEntry);
+
+void throwInvalidTypeException(JNIEnv* pEnv);
+void throwNonExistingKeyException(JNIEnv* pEnv);
+void throwStoreFullException(JNIEnv* pEnv);
+
+#endif

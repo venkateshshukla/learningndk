@@ -7,9 +7,16 @@
 int32_t isEntryValid(JNIEnv* env, StoreEntry* rEntry, StoreType rType)
 {
 	LOGV("isEntryValid is called");
-	if(rEntry == NULL || rEntry->nType != rType)
+	if(rEntry == NULL)
 	{
-		LOGV("Entry is invalid");
+		throwNonExistingKeyException(env);
+		LOGV("No key present with that type");
+		return 0;
+	}
+	else if(rEntry->nType != rType)
+	{
+		throwInvalidTypeException(env);
+		LOGV("EntryType is invalid");
 		return 0;
 	}
 	LOGV("Entry is valid");
@@ -53,7 +60,12 @@ StoreEntry* allocateEntry(JNIEnv* env, Store* rStore, jstring rKey)
 	else if(!error)
 	{
 		LOGV("No error while allocation");
-		if(rStore->numentries >= STORE_MAX_CAPACITY) return NULL;
+		if(rStore->numentries >= STORE_MAX_CAPACITY)
+		{
+			LOGV("Store is full");
+			throwStoreFullException(env);
+			return NULL;
+		}
 		rEntry = rStore->allentries + rStore->numentries;
 
 		const char* tmpKeyString = (*env)->GetStringUTFChars(env, rKey, NULL);
@@ -83,4 +95,35 @@ void freeEntry(JNIEnv* env, StoreEntry* rEntry)
 			break;
 	}
 	LOGV("Entry is freed");
+}
+
+void throwNonExistingKeyException(JNIEnv* pEnv)
+{
+	jclass fClass = (*pEnv)->FindClass(pEnv,
+			"com/venky/exceptions/NonExistingKeyException");
+	if (fClass != NULL)
+	{
+		(*pEnv)->ThrowNew(pEnv, fClass, "Key does not exist.");
+	}
+	(*pEnv)->DeleteLocalRef(pEnv, fClass);
+}
+
+void throwInvalidTypeException(JNIEnv* env)
+{
+	jclass fClass = (*env)->FindClass(env,
+			"com/venky/exceptions/InvalidTypeException");
+	if(fClass != NULL)
+		(*env)->DeleteLocalRef(env, fClass);
+	else
+		(*env)->ThrowNew(env, fClass, "Incorrect Type");
+}
+
+void throwStoreFullException(JNIEnv* env)
+{
+	jclass fClass = (*env)->FindClass(env,
+			"com/venky/exceptions/StoreFullException");
+	if(fClass == NULL)
+		(*env)->DeleteLocalRef(env, fClass);
+	else
+		(*env)->ThrowNew(env, fClass, "Store is Full");
 }

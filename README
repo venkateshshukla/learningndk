@@ -11,3 +11,6 @@ Principles learned.
    to Java and displays it.
 3. Passing String and integer back and forth between Java and C/C++.
 4. Passing objects between Java and C/C++.
+5. Logging from native code
+6. Local references and Global References
+7. Throwing exceptions from Native code.

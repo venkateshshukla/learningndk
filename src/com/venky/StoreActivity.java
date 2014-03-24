@@ -2,6 +2,10 @@ package com.venky;
 
 import java.util.ArrayList;
 
+import com.venky.exceptions.InvalidTypeException;
+import com.venky.exceptions.NonExistingKeyException;
+import com.venky.exceptions.StoreFullException;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,11 +16,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 public class StoreActivity extends Activity {
-	
+
 	private EditText etKey, etValue;
 	private Spinner spinType;
 	private Store store;
-	private static final String TAG = "StoreActivity"; 
+	private static final String TAG = "StoreActivity";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,32 +41,39 @@ public class StoreActivity extends Activity {
 		(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
 		spinType.setAdapter(spinnerArrayAdapter);
 	}
-	
+
 	public void pressGet(View v) {
 		String key = etKey.getText().toString();
 		StoreType type = (StoreType) spinType.getSelectedItem();
-		String value; 
+		String value;
 		Log.v(TAG, key);
 		Log.v(TAG, String.valueOf(type));
-		switch(type) {
-		case Int:
-			value = String.valueOf(store.getInt(key));
-			Log.v(TAG, value);
-			etValue.setText(value);
-			break;
-		case String:
-			value = store.getString(key);
-			Log.v(TAG, value);
-			etValue.setText(value);
-			break;
-		case Color:
-			value = store.getColor(key).toString();
-			Log.v(TAG, value);
-			etValue.setText(value);
-			break;
+		try {
+			switch(type) {
+			case Int:
+				value = String.valueOf(store.getInt(key));
+				Log.v(TAG, value);
+				etValue.setText(value);
+				break;
+			case String:
+				value = store.getString(key);
+				Log.v(TAG, value);
+				etValue.setText(value);
+				break;
+			case Color:
+				value = store.getColor(key).toString();
+				Log.v(TAG, value);
+				etValue.setText(value);
+				break;
+			}
+		} catch (NonExistingKeyException e) {
+			displayErrorMsg(e.getMessage());
+		} catch (InvalidTypeException e) {
+			displayErrorMsg(e.getMessage());
 		}
+
 	}
-	
+
 	public void pressSet(View v) {
 		String key = etKey.getText().toString();
 		String value = etValue.getText().toString();
@@ -82,8 +93,23 @@ public class StoreActivity extends Activity {
 					store.setColor(key, new Color(value));
 					break;
 			}
-		} catch(Exception e) {
-			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+		}
+		catch (NumberFormatException e)
+		{
+			displayErrorMsg("Incorrect Value");
+		}
+		catch (IllegalArgumentException e)
+		{
+			displayErrorMsg("Incorrect Value");
+		}
+		catch (StoreFullException e)
+		{
+			displayErrorMsg(e.getMessage());
 		}
 	}
+
+	private void displayErrorMsg(String errorMsg) {
+		Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show();
+	}
 }
+
