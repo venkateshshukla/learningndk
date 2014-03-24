@@ -1,0 +1,13 @@
+This application is a sample application made while learning NDK
+from the book "Android NDK Beginner's Guide" by Packt Publications
+
+This application implements the various principles involved in
+Java JNI while dealing with the Native C/C++ code.
+
+Principles learned.
+1. Setting up eclipse for C/C++ Java hybrid android application
+   development.
+2. Making an elementary application that passes native integer
+   to Java and displays it.
+3. Passing String and integer back and forth between Java and C/C++.
+4. Passing objects between Java and C/C++.

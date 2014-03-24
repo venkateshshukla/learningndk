@@ -1,0 +1,89 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:textAlignment="gravity"
+        android:text="Save or Retrieve Value from Store" />
+
+    <TextView
+        android:id="@+id/tvKey"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTitle"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_vertical"
+        android:textAlignment="gravity"
+        android:text="Key \t:\t" />
+    
+    <EditText
+        android:id="@+id/etKey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/tvKey"
+        android:layout_below="@id/tvTitle"
+        android:hint="Key" />
+    
+    <TextView
+        android:id="@+id/tvValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etKey"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_vertical"
+        android:textAlignment="gravity"
+        android:text="Value\t:\t" />
+    
+    <EditText
+        android:id="@+id/etValue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/tvValue"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/etKey"
+        android:hint="Value" />
+    
+    <TextView
+        android:id="@+id/tvType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etValue"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_vertical"
+        android:textAlignment="gravity"
+        android:text="Type\t:\t" />
+
+    <Spinner
+        android:id="@+id/spinType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/tvType"
+        android:layout_below="@id/etValue"
+        android:hint="Type" />
+
+    <Button
+        android:id="@+id/bSet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinType"
+        android:layout_centerHorizontal="true"
+        android:onClick="pressSet"
+        android:text="Set" />
+
+    <Button
+        android:id="@+id/bGet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/bSet"
+        android:onClick="pressGet"
+        android:text="Get" />
+    
+</RelativeLayout>
