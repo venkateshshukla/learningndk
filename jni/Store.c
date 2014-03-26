@@ -84,6 +84,7 @@ StoreEntry* allocateEntry(JNIEnv* env, Store* rStore, jstring rKey)
 
 void freeEntry(JNIEnv* env, StoreEntry* rEntry)
 {
+	int i;
 	LOGV("freeEntry is called");
 	switch(rEntry->nType)
 	{
@@ -92,6 +93,16 @@ void freeEntry(JNIEnv* env, StoreEntry* rEntry)
 			break;
 		case StoreType_Color:
 			(*env)->DeleteGlobalRef(env, rEntry->nKey);
+			break;
+		case StoreType_IntArray:
+			free(rEntry->nValue.intArrayValues);
+			break;
+		case StoreType_ColorArray:
+
+			for(i = 0; i < rEntry->length; i++)
+				(*env)->DeleteGlobalRef(env,
+						rEntry->nValue.colorArrayValues[i]);
+			free(rEntry->nValue.colorArrayValues);
 			break;
 	}
 	LOGV("Entry is freed");

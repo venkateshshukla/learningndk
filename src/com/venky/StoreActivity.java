@@ -37,6 +37,8 @@ public class StoreActivity extends Activity {
 		spinnerArray.add(StoreType.Int);
 		spinnerArray.add(StoreType.String);
 		spinnerArray.add(StoreType.Color);
+		spinnerArray.add(StoreType.IntArray);
+		spinnerArray.add(StoreType.ColorArray);
 		ArrayAdapter<StoreType> spinnerArrayAdapter = new ArrayAdapter<StoreType>
 		(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
 		spinType.setAdapter(spinnerArrayAdapter);
@@ -45,7 +47,7 @@ public class StoreActivity extends Activity {
 	public void pressGet(View v) {
 		String key = etKey.getText().toString();
 		StoreType type = (StoreType) spinType.getSelectedItem();
-		String value;
+		String value = "";
 		Log.v(TAG, key);
 		Log.v(TAG, String.valueOf(type));
 		try {
@@ -65,6 +67,19 @@ public class StoreActivity extends Activity {
 				Log.v(TAG, value);
 				etValue.setText(value);
 				break;
+			case IntArray:
+				int[] intvalues = store.getIntArray(key);
+				for(int x: intvalues)
+					value += (String.valueOf(x) + ";");
+				Log.v(TAG, value);
+				etValue.setText(value);
+				break;
+			case ColorArray:
+				Color[] colorvalues = store.getColorArray(key);
+				for(Color x:colorvalues)
+					value += (x.toString() + ";");
+				Log.v(TAG, value);
+				etValue.setText(value);
 			}
 		} catch (NonExistingKeyException e) {
 			displayErrorMsg(e.getMessage());
@@ -78,6 +93,7 @@ public class StoreActivity extends Activity {
 		String key = etKey.getText().toString();
 		String value = etValue.getText().toString();
 		StoreType type = (StoreType) spinType.getSelectedItem();
+		String[] stringvalues;
 		Log.v(TAG, key);
 		Log.v(TAG, value);
 		Log.v(TAG, String.valueOf(type));
@@ -91,6 +107,20 @@ public class StoreActivity extends Activity {
 					break;
 				case Color:
 					store.setColor(key, new Color(value));
+					break;
+				case IntArray:
+					stringvalues = value.split(";");
+					int[] intvalues = new int[stringvalues.length];
+					for(int i = 0; i < stringvalues.length; i++)
+						intvalues[i] = Integer.parseInt(stringvalues[i]);
+					store.setIntArray(key, intvalues);
+					break;
+				case ColorArray:
+					stringvalues = value.split(";");
+					Color[] colorvalues = new Color[stringvalues.length];
+					for(int i = 0; i < stringvalues.length; i++)
+						colorvalues[i] = new Color(stringvalues[i]);
+					store.setColorArray(key, colorvalues);
 					break;
 			}
 		}

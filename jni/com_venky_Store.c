@@ -89,4 +89,110 @@ JNIEXPORT void JNICALL Java_com_venky_Store_setColor
 	}
 }
 
+JNIEXPORT jintArray JNICALL Java_com_venky_Store_getIntArray
+  (JNIEnv *env, jobject obj, jstring rKey)
+{
+	LOGV("getIntArray is called");
+	StoreEntry *fEntry = findEntry(env, &nStore, rKey, NULL);
+	if(isEntryValid(env, fEntry, StoreType_IntArray))
+	{
+		jintArray nJavaIntArray = (*env)->NewIntArray(env, fEntry->length);
+		if(nJavaIntArray == NULL) {
+			return NULL;
+		}
+		(*env)->SetIntArrayRegion(env, nJavaIntArray, 0, fEntry->length,
+				fEntry->nValue.intArrayValues);
+		return nJavaIntArray;
+	}
+	return NULL;
+}
+JNIEXPORT void JNICALL Java_com_venky_Store_setIntArray
+  (JNIEnv *env, jobject obj, jstring rKey, jintArray jIntArray)
+{
+	jsize arraylen = (*env)->GetArrayLength(env, jIntArray);
+	int32_t* nIntArray = (int32_t *) malloc(arraylen * sizeof(int32_t));
+	(*env)->GetIntArrayRegion(env, jIntArray, 0, arraylen, nIntArray);
+	if((*env)->ExceptionCheck(env))
+	{
+		free(nIntArray);
+		return;
+	}
+	StoreEntry *nEntry = allocateEntry(env, &nStore, rKey);
+	if(nEntry != NULL)
+	{
+		nEntry->length = arraylen;
+		nEntry->nType = StoreType_IntArray;
+		nEntry->nValue.intArrayValues = nIntArray;
+	}
+	else
+	{
+		free(nIntArray);
+		return;
+	}
 
+}
+JNIEXPORT jobjectArray JNICALL Java_com_venky_Store_getColorArray
+  (JNIEnv *env, jobject obj, jstring rKey)
+{
+	StoreEntry *fEntry = findEntry(env, &nStore, rKey, NULL);
+	if(fEntry == NULL)
+		return NULL;
+	if(isEntryValid(env, fEntry, StoreType_ColorArray))
+	{
+		jclass jColorClass = (*env)->FindClass(env, "com/venky/Color");
+		if(jColorClass == NULL)
+			return NULL;
+
+		jobjectArray jColorArray = (*env)->NewObjectArray(env, fEntry->length,
+				jColorClass, NULL);
+		(*env)->DeleteLocalRef(env, jColorClass);
+		if(jColorArray == NULL)
+			return NULL;
+
+		int32_t i;
+		for(i = 0; i < fEntry->length; i++)
+		{
+			(*env)->SetObjectArrayElement(env, jColorArray, i,
+					fEntry->nValue.colorArrayValues[i]);
+			if((*env)->ExceptionCheck(env))
+				return NULL;
+		}
+		return jColorArray;
+	}
+	else
+		return NULL;
+
+}
+JNIEXPORT void JNICALL Java_com_venky_Store_setColorArray
+  (JNIEnv *env, jobject obj, jstring rKey, jobjectArray jColorArray)
+{
+	jsize arraylen = (*env)->GetArrayLength(env, jColorArray);
+	jobject *nColorArray = (jobject *) malloc(arraylen* sizeof(jobject));
+	int32_t i, j ;
+	for(i = 0; i < arraylen; i++)
+	{
+		jobject nLocalColor = (*env)->GetObjectArrayElement(env, jColorArray, i);
+		if(nLocalColor == NULL)
+			for(j = 0; j < arraylen; j++)
+				(*env)->DeleteGlobalRef(env, nColorArray[j]);
+		nColorArray[i] = (*env)->NewGlobalRef(env, nLocalColor);
+		if(nColorArray[i] == NULL)
+			for(j = 0; j < arraylen; j++)
+				(*env)->DeleteGlobalRef(env, nColorArray[j]);
+		(*env)->DeleteLocalRef(env, nLocalColor);
+	}
+	StoreEntry *nEntry = allocateEntry(env, &nStore, rKey);
+	if(nEntry == NULL)
+	{
+		for(j = 0; j < i; j++)
+			(*env)->DeleteGlobalRef(env, nColorArray[j]);
+		free(nColorArray);
+		return;
+	}
+	else
+	{
+		nEntry->length = arraylen;
+		nEntry->nType = StoreType_ColorArray;
+		nEntry->nValue.colorArrayValues = nColorArray;
+	}
+}

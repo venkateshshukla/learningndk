@@ -14,3 +14,5 @@ Principles learned.
 5. Logging from native code
 6. Local references and Global References
 7. Throwing exceptions from Native code.
+8. Passing of primitive and Object arrays between Java and C/C++.
+

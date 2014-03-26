@@ -55,6 +55,38 @@ JNIEXPORT jobject JNICALL Java_com_venky_Store_getColor
 JNIEXPORT void JNICALL Java_com_venky_Store_setColor
   (JNIEnv *, jobject, jstring, jobject);
 
+/*
+ * Class:     com_venky_Store
+ * Method:    getIntArray
+ * Signature: (Ljava/lang/String;)[I
+ */
+JNIEXPORT jintArray JNICALL Java_com_venky_Store_getIntArray
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_venky_Store
+ * Method:    setIntArray
+ * Signature: (Ljava/lang/String;[I)V
+ */
+JNIEXPORT void JNICALL Java_com_venky_Store_setIntArray
+  (JNIEnv *, jobject, jstring, jintArray);
+
+/*
+ * Class:     com_venky_Store
+ * Method:    getColorArray
+ * Signature: (Ljava/lang/String;)[Lcom/venky/Color;
+ */
+JNIEXPORT jobjectArray JNICALL Java_com_venky_Store_getColorArray
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_venky_Store
+ * Method:    setColorArray
+ * Signature: (Ljava/lang/String;[Lcom/venky/Color;)V
+ */
+JNIEXPORT void JNICALL Java_com_venky_Store_setColorArray
+  (JNIEnv *, jobject, jstring, jobjectArray);
+
 #ifdef __cplusplus
 }
 #endif
